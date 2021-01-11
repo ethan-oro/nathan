@@ -1,4 +1,5 @@
 import time
+import schedule
 import scrape
 import handle_sheets
 from collections import OrderedDict
@@ -26,7 +27,15 @@ COLUMNS = ['event', 'name', 'graduation_year', 'school', 'company', 'job_title',
            'social_media', 'event_venue', 'event_url']
 
 
+def schedule_run():
+    schedule.every().day.at("21:07").do(run)
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
+
 def run():
+    print('running import...')
     sheets_credential = handle_sheets.get_credentials()
     records = handle_sheets.get_current(sheets_credential)
 
@@ -73,4 +82,4 @@ def order_new_records(records):
 
 
 if __name__ == '__main__':
-    run()
+    schedule_run()
