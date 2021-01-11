@@ -2,3 +2,4 @@ credentials.json
 token.pickle
 .idea/*
 nohup.out
+__pycahce__/*
