@@ -57,7 +57,7 @@ def upload_new(sheets, records):
             valueInputOption=VALUE_OPTION, body=body).execute()
 
         print('{0} cells appended.'.format(result.get('updates').get('updatedCells')))
-        return result.get('updates').get('updatedCells'), len(rows)
+        return result.get('updates', 0).get('updatedCells', 0), len(rows)
 
     sheets_rows = []
     total_cells = 0
