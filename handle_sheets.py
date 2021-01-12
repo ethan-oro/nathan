@@ -57,21 +57,28 @@ def upload_new(sheets, records):
             valueInputOption=VALUE_OPTION, body=body).execute()
 
         print('{0} cells appended.'.format(result.get('updates').get('updatedCells')))
+        return result.get('updates').get('updatedCells'), len(rows)
 
     sheets_rows = []
+    total_cells = 0
+    total_rows = 0
     for record in records:
         row = []
         for k, v in record.items():
             row.append(v)
         sheets_rows.append(row)
-        if len(sheets_rows) % 10 == 0:
-            print('another 10')
 
-        # after 50 records, batch the uploads
+        # after 200 records, batch the uploads
         if len(sheets_rows) == 200:
-            upload(sheets, sheets_rows)
+            cells, rows = upload(sheets, sheets_rows)
+            total_cells += cells
+            total_rows += rows
             sheets_rows = []
-    upload(sheets, sheets_rows)
+    cells, rows = upload(sheets, sheets_rows)
+    total_cells += cells
+    total_rows += rows
+
+    return total_cells, total_rows
 
 
 

@@ -38,13 +38,17 @@ SCHEMA = {
     'interest_field': ('Field of Interest', 'String', False),
     'job_title': ('Job Title', 'String', False),
     'description': ('Description', 'String', False),
-    'social_media': ('Social Media Links', 'URL', False),
+    'twitter': ('Twitter Profile', 'URL', False),
+    'instagram': ('Instagram Profile', 'URL', False),
+    'linkedin': ('LinkedIn Profile', 'URL', False),
+    'facebook': ('Facebook Profile', 'URL', False),
     # === Event Information ===
     'event': ('Event Name', 'String', True),
     'event_venue': ('Event Venue', 'String', False),
     'event_url': ('Event Url', 'URL', False),
 }
 
+SOCIAL_MEDIA_TYPES = ['twitter', 'instagram', 'linkedin', 'facebook']
 
 def scrape():
     main = requests.get(START_URL)
@@ -68,7 +72,19 @@ def scrape_detail(base_record):
 
 
 def post_process(records):
-    return clean_text_iter(records)
+    def sort_social(row):
+        for social_media_profile in row['social_media']:
+            if isinstance(social_media_profile, list):
+                social_media_profile = social_media_profile[0]
+            social_media_profile = social_media_profile.lower()
+            for social_media_type in SOCIAL_MEDIA_TYPES:
+                if social_media_type in social_media_profile:
+                    row[social_media_type] = social_media_profile
+        del row['social_media']
+        return row
+    s0 = map(sort_social, records)
+    return clean_text_iter(s0)
+
 
 def row_from_vals(vals):
     rows = len(vals[next(iter(vals))])
