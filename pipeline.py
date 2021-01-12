@@ -90,4 +90,4 @@ def order_new_records(records):
 
 
 if __name__ == '__main__':
-    run()
+    schedule_run()
